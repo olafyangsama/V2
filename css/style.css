@@ -1,0 +1,164 @@
+/* ═══════════════════════════════════════
+   DESIGN TOKENS — FUTURISTIC BRONZE GOLD
+═══════════════════════════════════════ */
+:root {
+  /* Diadaptasi dari Logo Heksagon "New Logo (Sudut Tajam).png" */
+  --gold:        #C89B53;  
+  --gold-light:  #E8C98B;  
+  --gold-mid:    #A37336;  
+  --gold-dark:   #68461C;  
+  --gold-glow:   rgba(200, 155, 83, 0.35);
+  --gold-dim:    rgba(200, 155, 83, 0.1);
+
+  --silver:      #B3B3B3;
+  --silver-light:#D9D9D9;
+  --silver-mid:  #808080;
+  --silver-dark: #404040;
+  
+  /* Cyberpunk Dark Backgrounds */
+  --bg-void:     #030304; 
+  --bg-deep:     #08090C; 
+  --bg-main:     rgba(15, 17, 26, 0.7); 
+  --bg-card:     rgba(20, 22, 32, 0.55); 
+  --bg-card2:    rgba(25, 27, 38, 0.65);
+
+  --text-bright: #F4F1ED;
+  --text-mid:    #B5AA9A;
+  --text-dim:    #7A7368;
+  
+  --red:         #FF3355;
+  --green:       #11EE77;
+
+  --border-gold:   rgba(200, 155, 83, 0.3);
+  --border-silver: rgba(179, 179, 179, 0.15);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Inter', system-ui, sans-serif;
+  background: var(--bg-void);
+  color: var(--text-bright);
+  min-height: 100vh;
+  overflow-x: hidden;
+  position: relative;
+}
+
+/* ═══ FUTURISTIC BACKGROUND ═══ */
+.ambient-layer {
+  position: fixed; inset: 0;
+  pointer-events: none; z-index: 0;
+  overflow: hidden;
+  background: radial-gradient(circle at 50% 50%, #0c0e14 0%, var(--bg-void) 100%);
+}
+.cyber-grid {
+  position: absolute; inset: 0;
+  background-image: 
+    linear-gradient(rgba(200, 155, 83, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(200, 155, 83, 0.03) 1px, transparent 1px);
+  background-size: 30px 30px;
+  transform: perspective(500px) rotateX(60deg) scale(2);
+  transform-origin: top;
+  opacity: 0.4;
+  animation: gridMove 20s linear infinite;
+}
+@keyframes gridMove { 0% { transform: perspective(500px) rotateX(60deg) scale(2) translateY(0); } 100% { transform: perspective(500px) rotateX(60deg) scale(2) translateY(30px); } }
+
+.ambient-orb {
+  position: absolute; border-radius: 50%;
+  filter: blur(120px); mix-blend-mode: screen;
+}
+.orb-gold { width: 50vw; height: 50vh; background: rgba(200, 155, 83, 0.15); top: -10%; right: -10%; }
+.orb-silver { width: 40vw; height: 40vh; background: rgba(40, 90, 150, 0.1); bottom: -10%; left: -10%; }
+
+#particle-canvas { position: fixed; inset: 0; pointer-events: none; z-index: 0; }
+
+/* ═══ GLASSMORPHISM PANELS ═══ */
+.glass-panel {
+  background: rgba(10, 12, 16, 0.6);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--border-gold);
+}
+.glass-card {
+  background: var(--bg-card);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--border-silver);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+}
+
+/* ═══ TYPOGRAPHY & BUTTONS ═══ */
+.landing-title {
+  font-family: 'Cinzel', serif;
+  font-size: clamp(32px, 7vw, 72px);
+  font-weight: 900; line-height: 1.0; margin-bottom: 10px;
+  background: linear-gradient(135deg, var(--gold-light) 0%, var(--gold) 50%, var(--gold-dark) 100%);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  text-transform: uppercase;
+  letter-spacing: 4px;
+}
+.landing-main-logo { width: 120px; filter: drop-shadow(0 0 20px var(--gold-glow)); margin-bottom: 20px; }
+
+.btn-spin {
+  width: 100%; padding: 18px; font-family: 'Cinzel', serif;
+  font-size: 14px; letter-spacing: 4px; text-transform: uppercase;
+  font-weight: 700; cursor: pointer;
+  background: linear-gradient(135deg, rgba(20,20,20,0.8), rgba(5,5,5,0.9));
+  border: 1px solid var(--gold); border-radius: 4px;
+  color: var(--gold-light);
+  box-shadow: 0 0 15px var(--gold-dim), inset 0 0 10px rgba(200, 155, 83, 0.1);
+  transition: all 0.3s;
+}
+.btn-spin:hover {
+  background: var(--gold);
+  color: #000;
+  box-shadow: 0 0 30px var(--gold-glow);
+}
+
+/* Sisanya adalah CSS elemen UI yang serupa namun memakai variabel hex var(--gold) yang baru */
+.app-header { height: 64px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; padding: 0 32px; gap: 16px; }
+.header-logo { display: flex; align-items: center; gap: 12px; }
+.logo-icon { width: 42px; height: 42px; border: 1px solid var(--gold); background: #000; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 12px var(--gold-glow); border-radius: 4px; overflow: hidden; }
+.logo-icon img { width: 100%; height: 100%; object-fit: cover; }
+.logo-text { font-family: 'Cinzel', serif; font-size: 15px; font-weight: 700; color: var(--gold-light); text-transform: uppercase; letter-spacing: 2px;}
+
+.nav-btn { background: transparent; border: 1px solid transparent; color: var(--text-mid); padding: 8px 14px; font-size: 11px; text-transform: uppercase; letter-spacing: 2px; cursor: pointer; transition: 0.3s;}
+.nav-btn.active, .nav-btn:hover { color: var(--gold-light); border-color: var(--gold); background: var(--gold-dim); box-shadow: inset 0 0 10px var(--gold-dim); }
+
+.panel { display: none; padding: 36px 32px; max-width: 1020px; margin: 0 auto; }
+.panel.active { display: block; animation: panelIn 0.4s ease; }
+@keyframes panelIn { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
+
+.card { border-radius: 8px; padding: 24px; position: relative; overflow: hidden; transition: 0.3s; }
+.card:hover { border-color: var(--gold); }
+.card-gold { border-color: var(--gold); box-shadow: 0 0 20px var(--gold-dim); }
+
+.input-row input, textarea { width: 100%; background: rgba(0,0,0,0.4); border: 1px solid var(--border-silver); padding: 12px; color: #fff; outline: none; border-radius: 4px; font-family: 'Inter'; }
+.input-row input:focus, textarea:focus { border-color: var(--gold); box-shadow: 0 0 10px var(--gold-dim); }
+.btn-add { background: var(--gold-dim); border: 1px solid var(--gold); color: var(--gold-light); padding: 10px 20px; cursor: pointer; transition: 0.3s; border-radius: 4px;}
+.btn-add:hover { background: var(--gold); color: #000; box-shadow: 0 0 15px var(--gold-glow); }
+
+.item-chip { display: flex; justify-content: space-between; padding: 10px; background: rgba(0,0,0,0.3); border: 1px solid var(--border-silver); margin-bottom: 5px; border-radius: 4px; font-size: 12px;}
+.item-chip:hover { border-color: var(--gold); }
+.btn-danger { background: rgba(255,51,85,0.1); border: 1px solid var(--red); color: var(--red); padding: 4px 8px; cursor: pointer; border-radius: 3px; }
+
+.winner-ticker { font-family: 'Cinzel'; font-size: 32px; color: var(--gold-light); text-align: center; margin: 20px 0; text-shadow: 0 0 15px var(--gold-glow); }
+.spin-bar-bg { width: 100%; height: 3px; background: rgba(255,255,255,0.1); border-radius: 3px;}
+.spin-bar-fill { height: 100%; width: 0; background: var(--gold); box-shadow: 0 0 10px var(--gold); transition: width 0.1s linear;}
+
+.killer-grid { display: flex; gap: 14px; overflow-x: auto; padding-bottom: 10px; }
+.killer-card { flex: 0 0 148px; border: 1px solid var(--border-silver); border-radius: 6px; background: rgba(0,0,0,0.5); }
+.killer-card .kc-img img { width: 100%; height: 148px; object-fit: cover; }
+.killer-card.selected { border-color: var(--gold); box-shadow: 0 0 20px var(--gold-glow); transform: scale(1.05); transition: 0.3s; }
+.killer-card .kc-name { text-align: center; padding: 10px; font-size: 12px; }
+
+/* Popup */
+.popup-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(8px); display: none; align-items: center; justify-content: center; z-index: 9999; }
+.popup-overlay.show { display: flex; }
+.popup-box { padding: 40px; text-align: center; border: 1px solid var(--gold); width: 400px; border-radius: 12px; }
+.popup-winner { font-family: 'Cinzel'; font-size: 28px; color: var(--gold-light); margin: 20px 0; text-shadow: 0 0 20px var(--gold-glow); }
+.popup-btn { background: transparent; border: 1px solid var(--gold); color: var(--gold-light); padding: 10px 20px; cursor: pointer; text-transform: uppercase; font-family: 'Cinzel'; margin: 5px; transition: 0.3s;}
+.popup-btn:hover { background: var(--gold-dim); box-shadow: 0 0 10px var(--gold-glow); }
+.popup-btn-remove { border-color: var(--red); color: var(--red); }
+.popup-btn-remove:hover { background: rgba(255,51,85,0.2); box-shadow: none; }
