@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gaming Corner — Tournament Spin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <!-- Memanggil file CSS Eksternal -->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- AMBIENT BACKGROUND -->
+  <div class="ambient-layer">
+    <div class="cyber-grid"></div>
+    <div class="ambient-orb orb-gold"></div>
+    <div class="ambient-orb orb-silver"></div>
+    <div class="ambient-orb orb-gold2"></div>
+  </div>
+  <canvas id="particle-canvas"></canvas>
+
+  <!-- ═══ LANDING PAGE ═══ -->
+  <div id="landing">
+    <div class="landing-hexagon-wrap">
+      <div class="landing-ring"></div>
+      <div class="landing-ring"></div>
+      <div class="landing-ring"></div>
+    </div>
+
+    <div class="landing-content">
+      <div class="landing-logo-container">
+         <img src="assets/img/logo.png" alt="Logo" class="landing-main-logo" onerror="this.style.display='none';">
+      </div>
+      <div class="landing-eyebrow">Online Game Tournament</div>
+      <h1 class="landing-title">Gaming Corner</h1>
+      <div class="landing-title2">Discord Community</div>
+      <div class="gold-divider"></div>
+      <div class="landing-subtitle">Thank You for Your Participation</div>
+      <button class="landing-btn" onclick="enterApp()">
+        <i class="fas fa-power-off"></i>
+        <span>Initialize System</span>
+      </button>
+    </div>
+
+    <div class="landing-stats">
+      <div class="stat-item"><span class="stat-num" id="stat-winners">0</span><span class="stat-label">Winners</span></div>
+      <div class="stat-sep"></div>
+      <div class="stat-item"><span class="stat-num" id="stat-gifts">0</span><span class="stat-label">Gifts</span></div>
+      <div class="stat-sep"></div>
+      <div class="stat-item"><span class="stat-num" id="stat-killers">0</span><span class="stat-label">Killers</span></div>
+      <div class="stat-sep"></div>
+      <div class="stat-item"><span class="stat-num" id="stat-teams">0</span><span class="stat-label">Teams</span></div>
+    </div>
+  </div>
+
+  <!-- CONFETTI CANVAS -->
+  <canvas id="confetti-canvas"></canvas>
+
+  <!-- ═══ MAIN APP ═══ -->
+  <div id="app">
+    <header class="app-header glass-panel">
+      <div class="header-logo">
+        <div class="logo-icon">
+          <img src="assets/img/logo.png" alt="GC" onerror="this.style.display='none';this.parentElement.innerHTML='<span class=logo-icon-fallback>⬡</span>'">
+        </div>
+        <div>
+          <div class="logo-text">Gaming Corner</div>
+          <div class="logo-sub">System V2.0</div>
+        </div>
+      </div>
+
+      <nav class="header-nav">
+        <button class="nav-btn active" onclick="showPanel('winner',this)"><i class="fas fa-trophy"></i> Winner</button>
+        <button class="nav-btn" onclick="showPanel('giveaway',this)"><i class="fas fa-gift"></i> Giveaway</button>
+        <button class="nav-btn" onclick="showPanel('killer-sel',this)"><i class="fas fa-crosshairs"></i> Killer Sel.</button>
+        <button class="nav-btn" onclick="showPanel('the-killer',this)"><i class="fas fa-skull"></i> The Killer</button>
+        <button class="nav-btn" onclick="showPanel('team',this)"><i class="fas fa-users"></i> Team</button>
+      </nav>
+
+      <div class="header-right">
+        <div class="now-playing" id="now-playing-bar">
+          <div class="now-playing-dot" id="npDot"></div>
+          <div class="audio-visualizer paused" id="header-visualizer">
+            <div class="viz-bar"></div><div class="viz-bar"></div><div class="viz-bar"></div>
+            <div class="viz-bar"></div><div class="viz-bar"></div>
+          </div>
+          <span id="now-playing-text" style="font-size:9px;color:var(--text-dim);letter-spacing:1px">BGM</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- KONTEN PANEL (SAMA SEPERTI SEBELUMNYA, DENGAN KELAS .glass-card) -->
+    <!-- PANEL: WINNER -->
+    <div class="panel active" id="panel-winner">
+      <div class="panel-header">
+        <span class="panel-crown">🏆</span>
+        <div class="panel-title"><span class="g">Giveaway</span> <span class="s">Winner</span></div>
+        <div class="panel-divider"></div>
+        <div class="panel-desc">Spin untuk memilih pemenang secara acak dari daftar peserta.</div>
+      </div>
+      <div class="card glass-card" style="margin-bottom:16px">
+        <button class="toggle-section-btn" onclick="toggleSection('winner-input')"><i class="fas fa-chevron-down"></i> Input Peserta</button>
+        <div class="collapsible" id="winner-input" style="max-height:400px">
+          <div class="section-label">Tambah Peserta</div>
+          <div class="input-row">
+            <input type="text" id="winner-new" placeholder="Nama peserta..." onkeydown="if(event.key==='Enter')addWinnerItem()">
+            <button class="btn-add" onclick="addWinnerItem()"><i class="fas fa-plus"></i> Tambah</button>
+          </div>
+          <div class="item-list" id="winner-list"></div>
+        </div>
+      </div>
+      <div class="card glass-card card-gold">
+        <div class="section-label">Spin Pemenang</div>
+        <div class="winner-display">
+          <div class="winner-ticker" id="winner-ticker">READY</div>
+          <div class="spin-bar-wrap"><div class="spin-bar-bg"><div class="spin-bar-fill" id="winner-bar"></div></div></div>
+        </div>
+        <div class="spin-settings">
+          <div><span>⏱ Durasi:</span><input type="range" id="winner-duration" min="3" max="15" value="7" step="0.5" oninput="document.getElementById('winner-duration-val').textContent=this.value+'s'"><span class="value-display" id="winner-duration-val">7s</span></div>
+          <div><span>⚡ Speed:</span><select id="winner-speed"><option value="0.6">Lambat</option><option value="1.0" selected>Sedang</option><option value="1.8">Cepat</option></select></div>
+        </div>
+        <button class="btn-spin" id="winner-spin-btn" onclick="spinWinner()"><span><i class="fas fa-fingerprint"></i> INITIATE SPIN</span></button>
+      </div>
+    </div>
+
+    <!-- PANEL: GIVEAWAY BOX -->
+    <div class="panel" id="panel-giveaway">
+      <div class="panel-header"><span class="panel-crown">🎁</span><div class="panel-title"><span class="g">Giveaway</span> <span class="s">Box</span></div><div class="panel-divider"></div></div>
+      <div class="card glass-card" style="margin-bottom:16px">
+        <button class="toggle-section-btn" onclick="toggleSection('giveaway-input')"><i class="fas fa-chevron-down"></i> Input Hadiah</button>
+        <div class="collapsible" id="giveaway-input" style="max-height:400px">
+          <div class="box-input-row">
+            <input type="text" id="giveaway-label" placeholder="Label kotak (Kotak 1...)">
+            <input type="text" id="giveaway-value" placeholder="Hadiah / Nominal...">
+          </div>
+          <button class="btn-add" style="width:100%;margin-bottom:12px" onclick="addGiveawayItem()"><i class="fas fa-plus"></i> Tambah Kotak</button>
+          <div class="item-list" id="giveaway-list"></div>
+        </div>
+      </div>
+      <div class="card glass-card card-gold">
+        <div class="section-label">Mystery Boxes</div>
+        <div class="mystery-boxes" id="mystery-boxes"></div>
+        <div class="spin-settings">
+          <div><span>⏱ Durasi:</span><input type="range" id="giveaway-duration" min="3" max="15" value="7" step="0.5" oninput="document.getElementById('giveaway-duration-val').textContent=this.value+'s'"><span class="value-display" id="giveaway-duration-val">7s</span></div>
+        </div>
+        <button class="btn-spin" id="giveaway-spin-btn" onclick="spinGiveaway()"><span><i class="fas fa-box-open"></i> BUKA KOTAK</span></button>
+      </div>
+    </div>
+
+    <!-- PANEL: KILLER SELECTION -->
+    <div class="panel" id="panel-killer-sel">
+      <div class="panel-header"><span class="panel-crown">📸</span><div class="panel-title"><span class="g">Killer</span> <span class="s">Selection</span></div><div class="panel-divider"></div><div class="panel-desc">Spin karakter. Admin dan user lain tidak tahu jika karakter tidak akan terulang.</div></div>
+      <div class="card glass-card" style="margin-bottom:16px">
+        <button class="toggle-section-btn" onclick="toggleSection('ks-input')"><i class="fas fa-chevron-down"></i> Input Karakter</button>
+        <div class="collapsible" id="ks-input" style="max-height:500px">
+          <div class="input-row"><input type="text" id="ks-name" placeholder="Nama karakter..."></div>
+          <div class="input-row" style="margin-bottom:4px"><input type="text" id="ks-img-url" placeholder="URL Gambar (opsional)..."></div>
+          <div class="url-note">Atau upload:</div>
+          <div style="display:flex;gap:8px;align-items:center;margin:8px 0 14px">
+            <label class="img-upload-label"><i class="fas fa-camera"></i> Upload Gambar<input type="file" accept="image/*" id="ks-img-file" onchange="handleKsImageUpload(this)"></label>
+            <span id="ks-img-preview-name" style="font-size:11px;color:var(--text-dim)"></span>
+          </div>
+          <button class="btn-add" style="width:100%;margin-bottom:12px" onclick="addKsItem()"><i class="fas fa-plus"></i> Tambah Karakter</button>
+          <div class="item-list" id="ks-list"></div>
+        </div>
+      </div>
+      <div class="card glass-card card-gold">
+        <div class="section-label">Karakter Grid</div>
+        <div class="killer-grid" id="killer-grid"></div>
+        <div class="spin-settings">
+          <div><span>⏱ Durasi:</span><input type="range" id="ks-duration" min="3" max="15" value="7" step="0.5" oninput="document.getElementById('ks-duration-val').textContent=this.value+'s'"><span class="value-display" id="ks-duration-val">7s</span></div>
+        </div>
+        <button class="btn-spin" id="ks-spin-btn" onclick="spinKillerSel()"><span><i class="fas fa-crosshairs"></i> SPIN KILLER</span></button>
+      </div>
+    </div>
+
+    <!-- PANEL: THE KILLER -->
+    <div class="panel" id="panel-the-killer">
+      <div class="panel-header"><span class="panel-crown">🗡️</span><div class="panel-title"><span class="g">The</span> <span class="s">Killer</span></div><div class="panel-divider"></div><div class="panel-desc">Sistem rahasia menjamin nama tidak akan terpilih dua kali hingga semua orang kebagian.</div></div>
+      <div class="card glass-card" style="margin-bottom:16px">
+        <button class="toggle-section-btn" onclick="toggleSection('tk-input')"><i class="fas fa-chevron-down"></i> Input Nama</button>
+        <div class="collapsible" id="tk-input" style="max-height:400px">
+          <div class="input-row">
+            <input type="text" id="tk-new" placeholder="Nama pemain..." onkeydown="if(event.key==='Enter')addTkItem()">
+            <button class="btn-add" onclick="addTkItem()"><i class="fas fa-plus"></i> Tambah</button>
+          </div>
+          <div class="item-list" id="tk-list"></div>
+        </div>
+      </div>
+      <div class="card glass-card card-gold">
+        <div class="section-label">Spin The Killer</div>
+        <div class="winner-display">
+          <div class="winner-ticker" id="tk-ticker">READY</div>
+          <div class="spin-bar-wrap"><div class="spin-bar-bg"><div class="spin-bar-fill" id="tk-bar"></div></div></div>
+        </div>
+        <div class="spin-settings">
+          <div><span>⏱ Durasi:</span><input type="range" id="tk-duration" min="3" max="15" value="7" step="0.5" oninput="document.getElementById('tk-duration-val').textContent=this.value+'s'"><span class="value-display" id="tk-duration-val">7s</span></div>
+        </div>
+        <button class="btn-spin" id="tk-spin-btn" onclick="spinTheKiller()"><span><i class="fas fa-skull"></i> SPIN THE KILLER</span></button>
+      </div>
+    </div>
+
+    <!-- PANEL: TEAM SELECTION -->
+    <div class="panel" id="panel-team">
+      <div class="panel-header"><span class="panel-crown">👥</span><div class="panel-title"><span class="g">Team</span> <span class="s">Selection</span></div><div class="panel-divider"></div></div>
+      <div class="card glass-card" style="margin-bottom:16px">
+        <button class="toggle-section-btn" onclick="toggleSection('team-input')"><i class="fas fa-chevron-down"></i> Input Tim</button>
+        <div class="collapsible" id="team-input" style="max-height:500px">
+          <div class="input-row"><input type="text" id="team-name" placeholder="Nama Tim..."></div>
+          <textarea id="team-members" placeholder="Anggota tim (pisahkan baris baru)"></textarea>
+          <button class="btn-add" style="width:100%;margin:12px 0" onclick="addTeamItem()"><i class="fas fa-plus"></i> Tambah Tim</button>
+          <div class="item-list" id="team-list"></div>
+        </div>
+      </div>
+      <div class="card glass-card card-gold">
+        <div class="section-label">Spin Team</div>
+        <div class="winner-display">
+          <div class="winner-ticker" id="team-ticker">READY</div>
+          <div class="spin-bar-wrap"><div class="spin-bar-bg"><div class="spin-bar-fill" id="team-bar"></div></div></div>
+        </div>
+        <div class="spin-settings">
+          <div><span>⏱ Durasi:</span><input type="range" id="team-duration" min="3" max="15" value="7" step="0.5" oninput="document.getElementById('team-duration-val').textContent=this.value+'s'"><span class="value-display" id="team-duration-val">7s</span></div>
+        </div>
+        <button class="btn-spin" id="team-spin-btn" onclick="spinTeam()"><span><i class="fas fa-users"></i> SPIN TEAM</span></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- POPUP -->
+  <div class="popup-overlay" id="popup">
+    <div class="popup-box glass-card">
+      <div class="popup-gold-ring"></div>
+      <div class="popup-icon" id="popup-icon">🏆</div>
+      <div class="popup-title" id="popup-title">System Alert</div>
+      <div id="popup-image-container" style="display:none;" class="popup-image"></div>
+      <div class="popup-winner" id="popup-winner">-</div>
+      <div id="popup-details" class="popup-details" style="display:none;"></div>
+      <div class="popup-actions">
+        <button class="popup-btn popup-btn-keep" onclick="closePopup(false)">Continue</button>
+        <button class="popup-btn popup-btn-remove" id="popup-remove-btn" onclick="closePopup(true)">Delete</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- AUDIO CONTROLLER (Tetap sama) -->
+  <div id="audio-controller">
+    <!-- Konten Audio Controller (Diringkas di sini) -->
+    <button id="audio-toggle-btn" onclick="toggleAudioPanel()" title="Audio Settings">🎵</button>
+  </div>
+
+  <!-- Memanggil Script -->
+  <script src="js/app.js"></script>
+</body>
+</html>
